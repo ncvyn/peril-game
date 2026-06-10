@@ -21,10 +21,35 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("Pausing the game...")
 	err = pubsub.PublishJSON(ch, routing.ExchangePerilDirect, routing.PauseKey, routing.PlayingState{IsPaused: true})
 	if err != nil {
 		panic(err)
 	}
 
+	gamelogic.PrintServerHelp()
 	cmd.WaitForInterrupt()
+
+	for {
+		words := gamelogic.GetInput()
+		if len(words) == 0 {
+			continue
+		}
+
+		switch words[0] {
+		case "pause":
+			fmt.Println("Pausing the game...")
+			pubsub.PublishJSON(ch, routing.ExchangePerilDirect, routing.PauseKey, routing.PlayingState{IsPaused: true})
+		case "resume":
+			fmt.Println("Resuming the game...")
+			pubsub.PublishJSON(ch, routing.ExchangePerilDirect, routing.PauseKey, routing.PlayingState{IsPaused: false})
+		case "quit":
+			fmt.Println("Quitting the server...")
+			return
+		case "help":
+			gamelogic.PrintServerHelp()
+		default:
+			fmt.Println("Unknown command. Type 'help' for a list of commands.")
+		}
+	}
 }
