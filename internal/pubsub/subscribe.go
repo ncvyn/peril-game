@@ -23,6 +23,23 @@ func SubscribeJSON[T any](
 	queueType SimpleQueueType,
 	handler func(T) AckType,
 ) error {
+	unmarshaller := func(body []byte) (T, error) {
+		var msg T
+		err := json.Unmarshal(body, &msg)
+		return msg, err
+	}
+	return subscribe(conn, exchange, queueName, key, queueType, handler, unmarshaller)
+}
+
+func subscribe[T any](
+	conn *amqp.Connection,
+	exchange,
+	queueName,
+	key string,
+	queueType SimpleQueueType,
+	handler func(T) AckType,
+	unmarshaller func([]byte) (T, error),
+) error {
 	ch, q, err := DeclareAndBind(
 		conn,
 		exchange,
@@ -49,7 +66,9 @@ func SubscribeJSON[T any](
 	go func() {
 		for delivery := range deliveryCh {
 			var msg T
-			if err := json.Unmarshal(delivery.Body, &msg); err != nil {
+			var err error
+			msg, err = unmarshaller(delivery.Body)
+			if err != nil {
 				log.Printf("Error unmarshaling message: %v", err)
 				continue
 			}
