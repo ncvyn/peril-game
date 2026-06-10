@@ -60,6 +60,7 @@ func main() {
 		case "spam":
 			fmt.Println("Spamming not allowed yet!")
 		case "quit":
+		case "exit":
 			gamelogic.PrintQuit()
 			return
 		default:

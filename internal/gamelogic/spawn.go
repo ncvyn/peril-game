@@ -29,6 +29,6 @@ func (gs *GameState) CommandSpawn(words []string) error {
 		Location: Location(locationName),
 	})
 
-	fmt.Printf("Spawned a(n) %s in %s with id %v\n", rank, locationName, id)
+	fmt.Printf("Spawned %s %s in %s with id %v\n", getArticle(rank), rank, locationName, id)
 	return nil
 }

@@ -21,7 +21,7 @@ func PrintClientHelp() {
 	fmt.Println("* spam <n>")
 	fmt.Println("    example:")
 	fmt.Println("    spam 5")
-	fmt.Println("* quit")
+	fmt.Println("* quit/exit")
 	fmt.Println("* help")
 }
 
@@ -85,7 +85,9 @@ func (gs *GameState) CommandStatus() {
 	}
 
 	p := gs.GetPlayerSnap()
-	fmt.Printf("You are %s, and you have %d units.\n", p.Username, len(p.Units))
+	units := getUnitPlurality(p.Units)
+
+	fmt.Printf("You are %s with %d %s.\n", p.Username, len(p.Units), units)
 	for _, unit := range p.Units {
 		fmt.Printf("* %v: %v, %v\n", unit.ID, unit.Location, unit.Rank)
 	}
