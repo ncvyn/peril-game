@@ -1,6 +1,8 @@
 package pubsub
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"log"
 
@@ -26,6 +28,22 @@ func SubscribeJSON[T any](
 	unmarshaller := func(body []byte) (T, error) {
 		var msg T
 		err := json.Unmarshal(body, &msg)
+		return msg, err
+	}
+	return subscribe(conn, exchange, queueName, key, queueType, handler, unmarshaller)
+}
+
+func SubscribeGob[T any](
+	conn *amqp.Connection,
+	exchange,
+	queueName,
+	key string,
+	queueType SimpleQueueType,
+	handler func(T) AckType,
+) error {
+	unmarshaller := func(body []byte) (T, error) {
+		var msg T
+		err := gob.NewDecoder(bytes.NewReader(body)).Decode(&msg)
 		return msg, err
 	}
 	return subscribe(conn, exchange, queueName, key, queueType, handler, unmarshaller)
