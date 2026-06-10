@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	connection, err := cmd.Connect()
+	conn, err := cmd.Connect()
 	if err != nil {
 		panic(err)
 	}
@@ -19,7 +19,7 @@ func main() {
 	}
 
 	_, _, err = pubsub.DeclareAndBind(
-		connection,
+		conn,
 		routing.ExchangePerilDirect,
 		routing.PauseKey+"."+username,
 		routing.PauseKey,
