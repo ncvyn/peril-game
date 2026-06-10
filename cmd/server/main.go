@@ -53,6 +53,7 @@ func main() {
 			fmt.Println("Resuming the game...")
 			pubsub.PublishJSON(ch, routing.ExchangePerilDirect, routing.PauseKey, routing.PlayingState{IsPaused: false})
 		case "quit":
+		case "exit":
 			fmt.Println("Quitting the server...")
 			return
 		case "help":

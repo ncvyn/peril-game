@@ -42,7 +42,7 @@ func PrintServerHelp() {
 	fmt.Println("Possible commands:")
 	fmt.Println("* pause")
 	fmt.Println("* resume")
-	fmt.Println("* quit")
+	fmt.Println("* quit/exit")
 	fmt.Println("* help")
 }
 
