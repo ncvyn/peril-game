@@ -21,18 +21,16 @@ func main() {
 		panic(err)
 	}
 
-	_, _, err = pubsub.DeclareAndBind(
-		conn,
-		routing.ExchangePerilDirect,   // exchange
-		routing.PauseKey+"."+username, // queue
-		routing.PauseKey,              // routing key
-		pubsub.SimpleQueueType(pubsub.TransientQueue),
-	)
-	if err != nil {
-		panic(err)
-	}
+	gs := gamelogic.NewGameState(username)
 
-	gameState := gamelogic.NewGameState(username)
+	pubsub.SubscribeJSON(
+		conn,
+		routing.ExchangePerilDirect,
+		routing.PauseKey+"."+username,
+		routing.PauseKey,
+		pubsub.TransientQueue,
+		handlerPause(gs),
+	)
 
 	for {
 		words := gamelogic.GetInput()
@@ -42,19 +40,19 @@ func main() {
 
 		switch words[0] {
 		case "spawn":
-			err := gameState.CommandSpawn(words)
+			err := gs.CommandSpawn(words)
 			if err != nil {
 				fmt.Println("Error spawning unit:", err)
 			}
 		case "move":
-			mv, err := gameState.CommandMove(words)
+			mv, err := gs.CommandMove(words)
 			if err != nil {
 				fmt.Println("Error moving unit:", err)
 			}
 			_ = mv // TODO
 
 		case "status":
-			gameState.CommandStatus()
+			gs.CommandStatus()
 		case "help":
 			gamelogic.PrintClientHelp()
 		case "spam":
