@@ -16,6 +16,11 @@ func main() {
 	}
 	defer conn.Close()
 
+	ch, err := conn.Channel()
+	if err != nil {
+		panic(err)
+	}
+
 	username, err := gamelogic.ClientWelcome()
 	if err != nil {
 		panic(err)
@@ -30,6 +35,15 @@ func main() {
 		routing.PauseKey,
 		pubsub.TransientQueue,
 		handlerPause(gs),
+	)
+
+	pubsub.SubscribeJSON(
+		conn,
+		routing.ExchangePerilTopic,
+		"army_moves."+username,
+		"army_moves.*",
+		pubsub.TransientQueue,
+		handlerMove(gs),
 	)
 
 	for {
@@ -49,7 +63,13 @@ func main() {
 			if err != nil {
 				fmt.Println("Error moving unit:", err)
 			}
-			_ = mv // TODO
+			pubsub.PublishJSON(
+				ch,
+				routing.ExchangePerilTopic,
+				"army_moves."+gs.GetUsername(),
+				mv,
+			)
+			fmt.Println("Move command sent!")
 
 		case "status":
 			gs.CommandStatus()
