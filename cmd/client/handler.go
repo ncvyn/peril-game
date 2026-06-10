@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/bootdotdev/learn-pub-sub-starter/internal/gamelogic"
-	"github.com/bootdotdev/learn-pub-sub-starter/internal/routing"
+	"github.com/ncvyn/peril-game/internal/gamelogic"
+	"github.com/ncvyn/peril-game/internal/routing"
 )
 
 func handlerPause(gs *gamelogic.GameState) func(routing.PlayingState) {
