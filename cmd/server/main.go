@@ -21,16 +21,14 @@ func main() {
 		panic(err)
 	}
 
-	_, _, err = pubsub.DeclareAndBind(
+	pubsub.SubscribeGob(
 		conn,
-		routing.ExchangePerilTopic, // exchange
-		routing.GameLogSlug,        // queue
-		routing.GameLogSlug+".*",   // routing key
+		routing.ExchangePerilTopic,
+		routing.GameLogSlug,
+		routing.GameLogSlug+".*",
 		pubsub.DurableQueue,
+		handlerLogs(),
 	)
-	if err != nil {
-		panic(err)
-	}
 
 	gamelogic.PrintServerHelp()
 
