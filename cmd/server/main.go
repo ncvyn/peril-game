@@ -21,11 +21,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Pausing the game...")
-	err = pubsub.PublishJSON(ch, routing.ExchangePerilDirect, routing.PauseKey, routing.PlayingState{IsPaused: true})
-	if err != nil {
-		panic(err)
-	}
 	_, _, err = pubsub.DeclareAndBind(
 		conn,
 		routing.ExchangePerilTopic, // exchange
