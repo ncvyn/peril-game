@@ -7,13 +7,21 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+type AckType int
+
+const (
+	Ack AckType = iota
+	NackRequeue
+	NackDiscard
+)
+
 func SubscribeJSON[T any](
 	conn *amqp.Connection,
 	exchange,
 	queueName,
 	key string,
 	queueType SimpleQueueType,
-	handler func(T),
+	handler func(T) AckType,
 ) error {
 	ch, q, err := DeclareAndBind(
 		conn,
@@ -45,8 +53,21 @@ func SubscribeJSON[T any](
 				log.Printf("Error unmarshaling message: %v", err)
 				continue
 			}
-			handler(msg)
-			delivery.Ack(false)
+			ack := handler(msg)
+			switch ack {
+			case Ack:
+				if err := delivery.Ack(false); err != nil {
+					log.Printf("Error acknowledging message: %v", err)
+				}
+			case NackRequeue:
+				if err := delivery.Nack(false, true); err != nil {
+					log.Printf("Error negatively acknowledging and requeuing message: %v", err)
+				}
+			case NackDiscard:
+				if err := delivery.Nack(false, false); err != nil {
+					log.Printf("Error negatively acknowledging and discarding message: %v", err)
+				}
+			}
 		}
 	}()
 
