@@ -23,9 +23,9 @@ func main() {
 
 	_, _, err = pubsub.DeclareAndBind(
 		conn,
-		routing.ExchangePerilDirect,
-		routing.PauseKey+"."+username,
-		routing.PauseKey,
+		routing.ExchangePerilDirect,   // exchange
+		routing.PauseKey+"."+username, // queue
+		routing.PauseKey,              // routing key
 		pubsub.SimpleQueueType(pubsub.TransientQueue),
 	)
 	if err != nil {
