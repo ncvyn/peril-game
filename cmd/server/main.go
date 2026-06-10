@@ -26,6 +26,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	_, _, err = pubsub.DeclareAndBind(
+		conn,
+		routing.ExchangePerilTopic, // exchange
+		routing.GameLogSlug,        // queue
+		routing.GameLogSlug+".*",   // routing key
+		pubsub.SimpleQueueType(pubsub.DurableQueue),
+	)
+	if err != nil {
+		panic(err)
+	}
 
 	gamelogic.PrintServerHelp()
 
