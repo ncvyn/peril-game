@@ -14,8 +14,6 @@ func Connect() (*amqp.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
-
 	fmt.Println("Successfully connected to RabbitMQ server @", url)
 	return conn, nil
 }

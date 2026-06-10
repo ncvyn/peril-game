@@ -11,6 +11,11 @@ import (
 
 func main() {
 	conn, err := cmd.Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
 	ch, err := conn.Channel()
 	if err != nil {
 		panic(err)

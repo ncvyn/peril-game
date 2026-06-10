@@ -12,6 +12,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer conn.Close()
 
 	username, err := gamelogic.ClientWelcome()
 	if err != nil {
