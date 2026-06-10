@@ -42,20 +42,12 @@ func main() {
 
 		switch words[0] {
 		case "spawn":
-			if len(words) < 2 {
-				gamelogic.PrintClientHelp()
-				continue
-			}
-			err := gameState.CommandSpawn(words[1:])
+			err := gameState.CommandSpawn(words)
 			if err != nil {
 				fmt.Println("Error spawning unit:", err)
 			}
 		case "move":
-			if len(words) < 3 {
-				gamelogic.PrintClientHelp()
-				continue
-			}
-			mv, err := gameState.CommandMove(words[1:])
+			mv, err := gameState.CommandMove(words)
 			if err != nil {
 				fmt.Println("Error moving unit:", err)
 			}
