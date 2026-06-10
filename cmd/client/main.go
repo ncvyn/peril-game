@@ -52,7 +52,7 @@ func main() {
 		"war",
 		routing.WarRecognitionsPrefix+".*",
 		pubsub.DurableQueue,
-		handlerWar(gs),
+		handlerWar(gs, ch),
 	)
 
 	for {
