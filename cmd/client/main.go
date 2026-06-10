@@ -43,7 +43,16 @@ func main() {
 		"army_moves."+username,
 		"army_moves.*",
 		pubsub.TransientQueue,
-		handlerMove(gs),
+		handlerMove(gs, ch),
+	)
+
+	pubsub.SubscribeJSON(
+		conn,
+		routing.ExchangePerilTopic,
+		"war",
+		routing.WarRecognitionsPrefix+".*",
+		pubsub.DurableQueue,
+		handlerWar(gs),
 	)
 
 	for {
