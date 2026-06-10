@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/bootdotdev/learn-pub-sub-starter/cmd"
 	"github.com/bootdotdev/learn-pub-sub-starter/internal/gamelogic"
 	"github.com/bootdotdev/learn-pub-sub-starter/internal/pubsub"
@@ -30,5 +32,47 @@ func main() {
 		panic(err)
 	}
 
+	gameState := gamelogic.NewGameState(username)
 	cmd.WaitForInterrupt()
+
+	for {
+		words := gamelogic.GetInput()
+		if len(words) == 0 {
+			continue
+		}
+
+		switch words[0] {
+		case "spawn":
+			if len(words) < 2 {
+				gamelogic.PrintClientHelp()
+				continue
+			}
+			err := gameState.CommandSpawn(words[1:])
+			if err != nil {
+				fmt.Println("Error spawning unit:", err)
+			}
+		case "move":
+			if len(words) < 3 {
+				gamelogic.PrintClientHelp()
+				continue
+			}
+			mv, err := gameState.CommandMove(words[1:])
+			if err != nil {
+				fmt.Println("Error moving unit:", err)
+			}
+			_ = mv // TODO
+
+		case "status":
+			gameState.CommandStatus()
+		case "help":
+			gamelogic.PrintClientHelp()
+		case "spam":
+			fmt.Println("Spamming not allowed yet!")
+		case "quit":
+			gamelogic.PrintQuit()
+			return
+		default:
+			fmt.Println("Unknown command. Type 'help' for a list of commands.")
+		}
+	}
 }
