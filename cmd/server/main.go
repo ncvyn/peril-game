@@ -26,7 +26,7 @@ func main() {
 		routing.ExchangePerilTopic, // exchange
 		routing.GameLogSlug,        // queue
 		routing.GameLogSlug+".*",   // routing key
-		pubsub.SimpleQueueType(pubsub.DurableQueue),
+		pubsub.DurableQueue,
 	)
 	if err != nil {
 		panic(err)
