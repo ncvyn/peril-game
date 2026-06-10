@@ -33,7 +33,6 @@ func main() {
 	}
 
 	gameState := gamelogic.NewGameState(username)
-	cmd.WaitForInterrupt()
 
 	for {
 		words := gamelogic.GetInput()

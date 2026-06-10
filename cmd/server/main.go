@@ -28,7 +28,6 @@ func main() {
 	}
 
 	gamelogic.PrintServerHelp()
-	cmd.WaitForInterrupt()
 
 	for {
 		words := gamelogic.GetInput()
