@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/ncvyn/peril-game/cmd"
 	"github.com/ncvyn/peril-game/internal/gamelogic"
@@ -85,7 +87,30 @@ func main() {
 		case "help":
 			gamelogic.PrintClientHelp()
 		case "spam":
-			fmt.Println("Spamming not allowed yet!")
+			if len(words) < 2 {
+				fmt.Println("Usage: spam <number_of_moves>")
+				continue
+			}
+			interations, err := strconv.Atoi(words[1])
+			if err != nil {
+				fmt.Println("Invalid number of moves:", err)
+				continue
+			}
+			for i := range interations {
+				err := pubsub.PublishGob(
+					ch,
+					routing.ExchangePerilTopic,
+					routing.GameLogSlug+"."+gs.GetUsername(),
+					routing.GameLog{
+						CurrentTime: time.Now(),
+						Message:     gamelogic.GetMaliciousLog(),
+						Username:    gs.GetUsername(),
+					},
+				)
+				if err != nil {
+					fmt.Printf("Error publishing spam %d: %v\n", i+1, err)
+				}
+			}
 		case "quit":
 		case "exit":
 			gamelogic.PrintQuit()
